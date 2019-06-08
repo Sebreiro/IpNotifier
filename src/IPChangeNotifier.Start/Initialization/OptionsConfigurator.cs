@@ -6,12 +6,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IPChangeNotifier.Start.Initialization
 {
-    public class OptionsConfigurator
+    public static class OptionsConfigurator
     {
-        private static IConfigurationRoot Config() => new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("Config/appsettings.json", optional: false, reloadOnChange: true)
-            .Build();
+        private static IConfigurationRoot Config()
+        {
+            return new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("Config/appsettings.json", false, true)
+                .Build();
+        }
 
         public static void Configure(IServiceCollection serviceCollection)
         {
@@ -21,7 +24,7 @@ namespace IPChangeNotifier.Start.Initialization
             AddConfigParts(serviceCollection, configurationRoot);
         }
 
-        private static void AddConfigParts(IServiceCollection serviceCollection,IConfigurationRoot configurationRoot)
+        private static void AddConfigParts(IServiceCollection serviceCollection, IConfigurationRoot configurationRoot)
         {
             serviceCollection.Configure<MessageSenderConfig>(configurationRoot.GetSection("messageSender"));
             serviceCollection.Configure<JobConfig>(configurationRoot.GetSection("jobConfig"));

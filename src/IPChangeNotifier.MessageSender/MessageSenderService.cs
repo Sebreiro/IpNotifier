@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
@@ -11,15 +12,14 @@ namespace IPChangeNotifier.MessageSender
 {
     public class MessageSenderService : IMessageSenderService
     {
-        readonly ILogger _logger;
-        readonly MessageSenderConfig _config;
+        private readonly MessageSenderConfig _config;
+        private readonly ILogger _logger;
 
         public MessageSenderService(ILogger<MessageSenderService> logger, IOptionsSnapshot<MessageSenderConfig> config)
         {
             _logger = logger;
             _config = config.Value;
             CheckConfig(_config);
-
         }
 
         public async Task Send(string message)
@@ -29,6 +29,7 @@ namespace IPChangeNotifier.MessageSender
                 _logger.LogError("Message is null");
                 return;
             }
+
             var requestUrl = _config.Url;
             var client = new HttpClient();
 
@@ -36,9 +37,8 @@ namespace IPChangeNotifier.MessageSender
             try
             {
                 var result = await client.PostAsync(requestUrl, httpContent);
-                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                if (result.StatusCode != HttpStatusCode.OK)
                     _logger.LogError($"{result}");
-
             }
             catch (Exception ex) when (ex.InnerException is SocketException)
             {

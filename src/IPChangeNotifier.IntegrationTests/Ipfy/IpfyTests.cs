@@ -1,6 +1,6 @@
-﻿using IPChangeNotifier.Clients.Ipfy;
-using System.Net;
+﻿using System.Net;
 using FluentAssertions;
+using IPChangeNotifier.Clients.Ipfy;
 using Xunit;
 
 // ReSharper disable IdentifierTypo
@@ -16,7 +16,7 @@ namespace IPChangeNotifier.IntegrationTests.Ipfy
 
             var result = client.GetIpAddress().Result;
 
-            IPAddress.TryParse(result, out var _).Should().BeTrue();
+            IPAddress.TryParse(result, out _).Should().BeTrue();
         }
     }
 }

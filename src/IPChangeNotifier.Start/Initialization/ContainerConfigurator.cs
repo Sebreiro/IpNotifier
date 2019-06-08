@@ -14,12 +14,12 @@ namespace IPChangeNotifier.Start.Initialization
     {
         public static IServiceProvider Configure(IServiceCollection serviceCollection)
         {
-            var containerBuilder = new Autofac.ContainerBuilder();
+            var containerBuilder = new ContainerBuilder();
             containerBuilder.Populate(serviceCollection);
 
             Register(containerBuilder);
 
-             var container = containerBuilder.Build();
+            var container = containerBuilder.Build();
 
             var serviceProvider = new AutofacServiceProvider(container);
             return serviceProvider;
@@ -32,7 +32,6 @@ namespace IPChangeNotifier.Start.Initialization
             builder.RegisterType<MessageJobFactory>().As<IMessageJobFactory>();
             builder.RegisterType<Application.Application>().As<Application.Application>();
             builder.RegisterType<IpifyClient>().As<IIpRequestClient>();
-
         }
     }
 }

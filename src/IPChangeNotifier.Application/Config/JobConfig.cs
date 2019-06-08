@@ -1,4 +1,4 @@
-﻿namespace IPChangeNotifier.Application.Config
+﻿﻿namespace IPChangeNotifier.Application.Config
 {
     public class JobConfig
     {

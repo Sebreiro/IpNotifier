@@ -15,17 +15,7 @@ namespace IPChangeNotifier.Services.Schedule
             InitializeJobManager();
         }
 
-        private void InitializeJobManager()
-        {
-            JobManager.JobStart += (info) => _logger.LogTrace($"JobStart start; Job Name:{info.Name}");
-            JobManager.JobEnd += info => _logger.LogTrace($"job end; Job name: {info.Name}");
-            JobManager.JobException += info => _logger.LogError($"Job Exception; Job name: {info.Name}. Exception: {info.Exception}");
-
-            //JobManager.Start();
-        }
-
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="job"></param>
         /// <param name="repeatTime">in minutes</param>
@@ -39,12 +29,21 @@ namespace IPChangeNotifier.Services.Schedule
                 throw new InvalidOperationException($"{nameof(repeatTime)} should be more than 0");
 
 
-            JobManager.AddJob(job, (s) => s.WithName(jobName).ToRunNow().AndEvery(repeatTime).Minutes());
+            JobManager.AddJob(job, s => s.WithName(jobName).ToRunNow().AndEvery(repeatTime).Minutes());
         }
 
         public void AddOneTimeTask(Action job, string jobName)
         {
             throw new NotImplementedException();
+        }
+
+        private void InitializeJobManager()
+        {
+            JobManager.JobStart += info => _logger.LogTrace($"JobStart start; Job Name:{info.Name}");
+            JobManager.JobEnd += info => _logger.LogTrace($"job end; Job name: {info.Name}");
+            JobManager.JobException += info => _logger.LogError($"Job Exception; Job name: {info.Name}. Exception: {info.Exception}");
+
+            //JobManager.Start();
         }
     }
 }

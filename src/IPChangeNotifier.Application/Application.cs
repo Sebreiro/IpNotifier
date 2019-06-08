@@ -10,17 +10,17 @@ namespace IPChangeNotifier.Application
 {
     public class Application
     {
-        private readonly ILogger _logger;
         private readonly JobConfig _jobConfig;
+        private readonly ILogger _logger;
         private readonly IMessageJobFactory _messageJobFactory;
-        private readonly IScheduleService _scheduleService;
         private readonly IMessageSenderService _messageSender;
+        private readonly IScheduleService _scheduleService;
 
         public Application(
-            ILogger<Application> logger, 
-            IMessageJobFactory messageJobFactory, 
-            IScheduleService scheduleService, 
-            IMessageSenderService messageSender, 
+            ILogger<Application> logger,
+            IMessageJobFactory messageJobFactory,
+            IScheduleService scheduleService,
+            IMessageSenderService messageSender,
             IOptions<JobConfig> jobConfig)
         {
             _logger = logger;
@@ -36,6 +36,7 @@ namespace IPChangeNotifier.Application
 
             _scheduleService.AddRecurrentTask(Job, GetRepeatTime(), "IP Notifier");
         }
+
         private async void Job()
         {
             try
@@ -45,10 +46,9 @@ namespace IPChangeNotifier.Application
                 var message = await action.Invoke();
                 if (message == null)
                     return;
-              
-                _logger.LogInformation($"IP Message: {message}");
-                _messageSender.Send(message);
 
+                _logger.LogInformation($"IP Message: {message}");
+                await _messageSender.Send(message);
             }
             catch (Exception ex)
             {
