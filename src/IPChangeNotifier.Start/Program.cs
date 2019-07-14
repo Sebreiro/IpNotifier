@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IPChangeNotifier.Start.Initialization;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace IPChangeNotifier.Start
 {
@@ -21,20 +21,20 @@ namespace IPChangeNotifier.Start
 
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddLogging((builder) => builder.SetMinimumLevel(LogLevel.Trace));
+            var configuration = OptionsConfigurator.Configure(serviceCollection);
 
-            OptionsConfigurator.Configure(serviceCollection);
+            LoggingConfiguration.Configure(serviceCollection, configuration);
 
             var serviceProvider = ContainerConfigurator.Configure(serviceCollection);
 
-            NLogConfigurator.Configure(serviceProvider);
-
             var application = serviceProvider.GetService<Application.Application>();
 
+            
             application.Start();
 
             await Task.Delay(-1, cts.Token);
-            NLog.LogManager.Shutdown();
+            
+            Log.CloseAndFlush();
 
             Console.WriteLine("Closing application");
             return 0;

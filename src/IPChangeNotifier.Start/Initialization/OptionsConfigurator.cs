@@ -16,12 +16,14 @@ namespace IPChangeNotifier.Start.Initialization
                 .Build();
         }
 
-        public static void Configure(IServiceCollection serviceCollection)
+        public static IConfiguration Configure(IServiceCollection serviceCollection)
         {
             serviceCollection.AddOptions();
             var configurationRoot = Config();
 
             AddConfigParts(serviceCollection, configurationRoot);
+
+            return configurationRoot;
         }
 
         private static void AddConfigParts(IServiceCollection serviceCollection, IConfigurationRoot configurationRoot)
