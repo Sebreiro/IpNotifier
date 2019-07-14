@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using FluentAssertions;
 using IPChangeNotifier.Clients.Ipfy;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 // ReSharper disable IdentifierTypo
@@ -12,7 +13,7 @@ namespace IPChangeNotifier.IntegrationTests.Ipfy
         [Fact]
         public void ReqeustIpAsText()
         {
-            var client = new IpifyClient();
+            var client = new IpifyClient(NullLogger<IpifyClient>.Instance);
 
             var result = client.GetIpAddress().Result;
 
