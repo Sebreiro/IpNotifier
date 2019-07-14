@@ -39,11 +39,9 @@ namespace IPChangeNotifier.Services.Schedule
 
         private void InitializeJobManager()
         {
-            JobManager.JobStart += info => _logger.LogTrace($"JobStart start; Job Name:{info.Name}");
-            JobManager.JobEnd += info => _logger.LogTrace($"job end; Job name: {info.Name}");
+            JobManager.JobStart += info => _logger.LogTrace($"Job Start; Job name:{info.Name}");
+            JobManager.JobEnd += info => _logger.LogTrace($"Job End; Job name: {info.Name}");
             JobManager.JobException += info => _logger.LogError($"Job Exception; Job name: {info.Name}. Exception: {info.Exception}");
-
-            //JobManager.Start();
         }
     }
 }

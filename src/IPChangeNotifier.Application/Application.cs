@@ -47,7 +47,7 @@ namespace IPChangeNotifier.Application
                 if (message == null)
                     return;
 
-                _logger.LogInformation($"IP Message: {message}");
+                _logger.LogInformation($"Message to send: {message}");
                 await _messageSender.Send(message);
             }
             catch (Exception ex)
