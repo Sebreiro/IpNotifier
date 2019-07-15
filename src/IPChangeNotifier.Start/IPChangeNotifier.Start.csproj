@@ -14,16 +14,11 @@
 
   <ItemGroup>
     <None Remove="Config\appsettings.json" />
-    <None Remove="Config\nlog.config" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Config\appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="Config\nlog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
