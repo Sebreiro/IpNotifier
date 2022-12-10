@@ -14,6 +14,7 @@ namespace IPChangeNotifier.MessageSender
     {
         private readonly MessageSenderConfig _config;
         private readonly ILogger _logger;
+        // private readonly IHttpClientFactory
 
         public MessageSenderService(ILogger<MessageSenderService> logger, IOptionsSnapshot<MessageSenderConfig> config)
         {
