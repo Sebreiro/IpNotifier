@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using IPChangeNotifier.Application.Helpers;
 using IPChangeNotifier.Clients;
@@ -7,22 +8,30 @@ namespace IPChangeNotifier.Application.Factory
 {
     public class MessageJobFactory : IMessageJobFactory
     {
-        private readonly IIpRequestClient _client;
+        private readonly IEnumerable<IIpRequestClient> _clients;
 
-        public MessageJobFactory(IIpRequestClient client)
+        public MessageJobFactory(IEnumerable<IIpRequestClient> clients)
         {
-            _client = client;
+            _clients = clients;
         }
 
         public Func<Task<string>> GetJob()
         {
             async Task<string> Job()
             {
-                var ip = await _client.GetIpAddress();
-                if (ip == null) return null;
+                foreach (var client in _clients)
+                {
+                    var ip = await client.GetIpAddress();
+                    if (ip == null)
+                    {
+                        continue;
+                    }
 
-                var message = MessageMakerHelper.CreateMessage(ip);
-                return message;
+                    var message = MessageMakerHelper.CreateMessage(ip);
+                    return message;
+                }
+
+                return null;
             }
 
             return Job;

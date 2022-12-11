@@ -2,6 +2,7 @@
 using IPChangeNotifier.Application.Factory;
 using IPChangeNotifier.Clients;
 using IPChangeNotifier.Clients.Ipfy;
+using IPChangeNotifier.Clients.Seeip;
 using IPChangeNotifier.MessageSender;
 using IPChangeNotifier.Services.Schedule;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +28,9 @@ namespace IPChangeNotifier.Start.Initialization
             serviceCollection.AddTransient<IMessageSenderService, MessageSenderService>();
             serviceCollection.AddTransient<IMessageJobFactory, MessageJobFactory>();
             serviceCollection.AddTransient<Application.Application>();
+
             serviceCollection.AddTransient<IIpRequestClient, IpifyClient>();
+            serviceCollection.AddTransient<IIpRequestClient, SeeipClient>();
         }
     }
 }

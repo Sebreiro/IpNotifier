@@ -21,11 +21,9 @@ namespace IPChangeNotifier.Clients.Ipfy
 
         public async Task<string> GetIpAddress()
         {
-            var client = new HttpClient();
-
             try
             {
-                var response = await client.GetAsync(Address);
+                var response = await _httpClient.GetAsync(Address);
 
                 var result = await response.Content.ReadAsStringAsync();
 
@@ -34,9 +32,8 @@ namespace IPChangeNotifier.Clients.Ipfy
             catch (HttpRequestException ex)
             {
                 _logger.LogWarning(ex, "IP Address request problem");
+                return null;
             }
-
-            return null;
         }
     }
 }
