@@ -14,11 +14,14 @@ namespace IPChangeNotifier.MessageSender
     {
         private readonly MessageSenderConfig _config;
         private readonly ILogger _logger;
-        // private readonly IHttpClientFactory
+        private readonly HttpClient _httpClient;
 
-        public MessageSenderService(ILogger<MessageSenderService> logger, IOptionsSnapshot<MessageSenderConfig> config)
+        public MessageSenderService(ILogger<MessageSenderService> logger,
+            IOptionsSnapshot<MessageSenderConfig> config,
+            IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
+            _httpClient = httpClientFactory.CreateClient();
             _config = config.Value;
             CheckConfig(_config);
         }
@@ -32,18 +35,19 @@ namespace IPChangeNotifier.MessageSender
             }
 
             var requestUrl = _config.Url;
-            var client = new HttpClient();
 
-            var httpContent = new StringContent($"{{channelName:\"{_config.ChannelName}\", message:\"{message}\"}}", Encoding.UTF8, "application/json");
+            var httpContent = new StringContent($"{{channelName:\"{_config.ChannelName}\", message:\"{message}\"}}",
+                Encoding.UTF8, "application/json");
             try
             {
-                var result = await client.PostAsync(requestUrl, httpContent);
+                var result = await _httpClient.PostAsync(requestUrl, httpContent);
                 if (result.StatusCode != HttpStatusCode.OK)
                     _logger.LogError($"{result}");
             }
             catch (Exception ex) when (ex.InnerException is SocketException)
             {
-                _logger.LogError($"RequestUrl: {requestUrl};{Environment.NewLine}RequestMessage: {message}{Environment.NewLine}Error: {ex.Message}");
+                _logger.LogError(
+                    $"RequestUrl: {requestUrl};{Environment.NewLine}RequestMessage: {message}{Environment.NewLine}Error: {ex.Message}");
             }
             catch (Exception ex)
             {

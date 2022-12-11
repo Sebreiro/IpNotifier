@@ -1,6 +1,4 @@
 ﻿using System;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using IPChangeNotifier.Application.Factory;
 using IPChangeNotifier.Clients;
 using IPChangeNotifier.Clients.Ipfy;
@@ -14,24 +12,22 @@ namespace IPChangeNotifier.Start.Initialization
     {
         public static IServiceProvider Configure(IServiceCollection serviceCollection)
         {
-            var containerBuilder = new ContainerBuilder();
-            containerBuilder.Populate(serviceCollection);
+            Register(serviceCollection);
 
-            Register(containerBuilder);
+            serviceCollection.AddHttpClient();
 
-            var container = containerBuilder.Build();
+            var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            var serviceProvider = new AutofacServiceProvider(container);
             return serviceProvider;
         }
 
-        private static void Register(ContainerBuilder builder)
+        private static void Register(IServiceCollection serviceCollection)
         {
-            builder.RegisterType<ScheduleService>().As<IScheduleService>();
-            builder.RegisterType<MessageSenderService>().As<IMessageSenderService>();
-            builder.RegisterType<MessageJobFactory>().As<IMessageJobFactory>();
-            builder.RegisterType<Application.Application>().As<Application.Application>();
-            builder.RegisterType<IpifyClient>().As<IIpRequestClient>();
+            serviceCollection.AddTransient<IScheduleService, ScheduleService>();
+            serviceCollection.AddTransient<IMessageSenderService, MessageSenderService>();
+            serviceCollection.AddTransient<IMessageJobFactory, MessageJobFactory>();
+            serviceCollection.AddTransient<Application.Application>();
+            serviceCollection.AddTransient<IIpRequestClient, IpifyClient>();
         }
     }
 }

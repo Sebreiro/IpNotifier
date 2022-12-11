@@ -33,8 +33,10 @@ namespace IPChangeNotifier.Application
         public void Start()
         {
             _logger.LogInformation("Starting Ip Notifier");
+            var jobRepeatTime = GetRepeatTime();
+            _logger.LogDebug($"Job Repeat time: {jobRepeatTime}");
 
-            _scheduleService.AddRecurrentTask(Job, GetRepeatTime(), "IP Notifier");
+            _scheduleService.AddRecurrentTask(Job, jobRepeatTime, "IP Notifier");
         }
 
         private async void Job()
